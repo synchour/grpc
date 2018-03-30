@@ -41,6 +41,20 @@ namespace Helloworld {
         __Marshaller_HelloRequest,
         __Marshaller_HelloReply);
 
+    static readonly grpc::Method<global::Helloworld.HelloRequest, global::Helloworld.HelloReply> __Method_SayHelloStreamReply = new grpc::Method<global::Helloworld.HelloRequest, global::Helloworld.HelloReply>(
+        grpc::MethodType.ServerStreaming,
+        __ServiceName,
+        "SayHelloStreamReply",
+        __Marshaller_HelloRequest,
+        __Marshaller_HelloReply);
+
+    static readonly grpc::Method<global::Helloworld.HelloRequest, global::Helloworld.HelloReply> __Method_SayHelloStream = new grpc::Method<global::Helloworld.HelloRequest, global::Helloworld.HelloReply>(
+        grpc::MethodType.DuplexStreaming,
+        __ServiceName,
+        "SayHelloStream",
+        __Marshaller_HelloRequest,
+        __Marshaller_HelloReply);
+
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
@@ -57,6 +71,16 @@ namespace Helloworld {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::Helloworld.HelloReply> SayHello(global::Helloworld.HelloRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task SayHelloStreamReply(global::Helloworld.HelloRequest request, grpc::IServerStreamWriter<global::Helloworld.HelloReply> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task SayHelloStream(grpc::IAsyncStreamReader<global::Helloworld.HelloRequest> requestStream, grpc::IServerStreamWriter<global::Helloworld.HelloReply> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -130,6 +154,22 @@ namespace Helloworld {
       {
         return CallInvoker.AsyncUnaryCall(__Method_SayHello, null, options, request);
       }
+      public virtual grpc::AsyncServerStreamingCall<global::Helloworld.HelloReply> SayHelloStreamReply(global::Helloworld.HelloRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return SayHelloStreamReply(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncServerStreamingCall<global::Helloworld.HelloReply> SayHelloStreamReply(global::Helloworld.HelloRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_SayHelloStreamReply, null, options, request);
+      }
+      public virtual grpc::AsyncDuplexStreamingCall<global::Helloworld.HelloRequest, global::Helloworld.HelloReply> SayHelloStream(grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return SayHelloStream(new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncDuplexStreamingCall<global::Helloworld.HelloRequest, global::Helloworld.HelloReply> SayHelloStream(grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncDuplexStreamingCall(__Method_SayHelloStream, null, options);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override GreeterClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -142,7 +182,9 @@ namespace Helloworld {
     public static grpc::ServerServiceDefinition BindService(GreeterBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_SayHello, serviceImpl.SayHello).Build();
+          .AddMethod(__Method_SayHello, serviceImpl.SayHello)
+          .AddMethod(__Method_SayHelloStreamReply, serviceImpl.SayHelloStreamReply)
+          .AddMethod(__Method_SayHelloStream, serviceImpl.SayHelloStream).Build();
     }
 
   }

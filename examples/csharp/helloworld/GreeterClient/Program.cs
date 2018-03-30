@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Grpc.Core;
 using Helloworld;
 
@@ -30,9 +32,43 @@ namespace GreeterClient
             var reply = client.SayHello(new HelloRequest { Name = user });
             Console.WriteLine("Greeting: " + reply.Message);
 
+            //StreamReply(client, user).Wait();
+
+            Stream(client, user).Wait();
+
             channel.ShutdownAsync().Wait();
+
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
+
+        public static async Task StreamReply(Greeter.GreeterClient client, String user)
+        {
+          var sreply = client.SayHelloStreamReply(new HelloRequest { Name = "Stream " + user });
+
+          while (await sreply.ResponseStream.MoveNext(CancellationToken.None))
+          {
+            var rep = sreply.ResponseStream.Current;
+            Console.WriteLine("Greeting Async: " + rep.Message);
+          }
+        }
+
+    public static async Task Stream(Greeter.GreeterClient client, String user)
+    {
+      var sreply = client.SayHelloStream();
+      
+      await sreply.RequestStream.WriteAsync(new HelloRequest { Name = "Stream " + user });
+
+      int i = 0;
+      while (await sreply.ResponseStream.MoveNext(CancellationToken.None))
+      {
+        var rep = sreply.ResponseStream.Current;
+        Console.WriteLine("Greeting Async: " + rep.Message);
+        if (i++ < 10)
+        {
+          await sreply.RequestStream.WriteAsync(new HelloRequest { Name = i + " Stream " + user });
+        }
+      }
     }
+  }
 }
